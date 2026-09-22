@@ -5,7 +5,10 @@ module.exports = {
   packagerConfig: {
     asar: true,
   },
-  rebuildConfig: {},
+  rebuildConfig: {
+    onlyModules: ['better-sqlite3'],
+    force: true,
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',

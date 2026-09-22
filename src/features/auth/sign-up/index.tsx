@@ -31,6 +31,12 @@ export default function SignUp() {
         </CardHeader>
         <CardContent>
           <SignUpForm />
+          <p className='text-muted-foreground mt-4 text-center text-sm'>
+            Already have an account?{' '}
+            <Link to='/sign-in' className='text-primary font-medium hover:underline'>
+              Sign in
+            </Link>
+          </p>
         </CardContent>
         <CardFooter>
           <p className='text-muted-foreground px-8 text-center text-sm'>

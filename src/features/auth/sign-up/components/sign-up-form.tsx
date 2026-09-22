@@ -18,6 +18,7 @@ import { PasswordInput } from '@/components/password-input'
 import { useNavigate } from '@tanstack/react-router'
 import axios from 'axios'
 import { companies, branches } from '@/features/users/data/data'
+import { API_BASE_URL } from '@/api/config'
 
 type SignUpFormProps = HTMLAttributes<HTMLFormElement>
 
@@ -64,7 +65,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     setIsLoading(true)
     setError(null)
     try {
-      await axios.post('/api/register', {
+      await axios.post(`${API_BASE_URL}/register`, {
         email: data.email,
         password: data.password,
         companyId: data.companyId,
@@ -72,8 +73,36 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         status: 'pending',
       })
       navigate({ to: '/sign-in' })
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed')
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string }
+      const isNetworkFailure = axios.isAxiosError(err) && !(err as { response?: unknown }).response
+
+      if (isNetworkFailure && window.electronAPI) {
+        try {
+          const result = await window.electronAPI.invoke('users:add', {
+            name: data.email.split('@')[0],
+            email: data.email,
+            password: data.password,
+            role: 'cashier',
+            status: 'active',
+            companyId: data.companyId,
+            branchId: data.branchId,
+            addedBy: 'local-registration',
+          })
+
+          if (result?.success) {
+            navigate({ to: '/sign-in' })
+            return
+          }
+
+          setError(result?.error || 'Unable to create a local account')
+        } catch (localError: unknown) {
+          const errorMessage = localError instanceof Error ? localError.message : 'Unable to create a local account'
+          setError(errorMessage)
+        }
+      } else {
+        setError(error.response?.data?.message || error.message || 'Registration failed')
+      }
     } finally {
       setIsLoading(false)
     }

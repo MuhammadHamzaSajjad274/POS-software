@@ -4046,6 +4046,11 @@ ipcMain.handle('users:add', async (event, user) => {
         safeUser.branch_id
       );
     } else {
+      const existingUser = db.prepare('SELECT user_id FROM users WHERE lower(email) = lower(?) LIMIT 1').get(safeUser.email);
+      if (existingUser) {
+        return { success: false, error: 'An account with this email already exists' };
+      }
+
       // If no specific ID, let database auto-generate
       stmt = db.prepare(`
         INSERT INTO users (

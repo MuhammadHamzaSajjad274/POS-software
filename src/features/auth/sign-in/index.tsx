@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/card'
 import AuthLayout from '../auth-layout'
 import { UserAuthForm } from './components/user-auth-form'
+import { Link } from '@tanstack/react-router'
 
 export default function SignIn() {
   return (
@@ -21,6 +22,12 @@ export default function SignIn() {
         </CardHeader>
         <CardContent>
           <UserAuthForm />
+          <p className='text-muted-foreground mt-4 text-center text-sm'>
+            Don&apos;t have an account?{' '}
+            <Link to='/sign-up' className='text-primary font-medium hover:underline'>
+              Sign up
+            </Link>
+          </p>
         </CardContent>
         {/* <CardFooter>
           <p className='text-muted-foreground px-4 pb-2 sm:px-8 text-center text-xs sm:text-sm'>

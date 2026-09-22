@@ -1,7 +1,5 @@
 import axios from 'axios'
-
-// Set your API base URL here
-const API_BASE_URL = 'http://martpos.tfourplus.com/api'
+import { API_BASE_URL } from './config'
 
 export interface LoginPayload {
   email: string

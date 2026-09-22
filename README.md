@@ -68,4 +68,13 @@ src/
 └── types/            # TypeScript definitions
 🚀 Getting Started
 Prerequisites
-Node.js 16.0.0 or higher
+Node.js 22.12.0 or higher
+
+Install and run locally
+```bash
+npm install
+npm run rebuild
+npm run dev:electron
+```
+
+The optional `VITE_API_BASE_URL` environment variable configures the remote API. If remote registration is unavailable, the Electron app can create a local account and authenticate offline.

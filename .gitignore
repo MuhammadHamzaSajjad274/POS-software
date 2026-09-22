@@ -26,3 +26,7 @@ dist-ssr
 *.sw?
 
 out/
+
+# Local runtime and generated TypeScript state
+app-data.db
+*.tsbuildinfo

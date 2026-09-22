@@ -7,7 +7,6 @@ import NotFoundError from '@/features/errors/not-found-error'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
-import SignIn from '@/features/auth/sign-in'
 
 // Loading component for initial auth check
 function InitialLoading() {
@@ -21,7 +20,7 @@ function InitialLoading() {
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
 }>()({
-  component: () => {
+  component: function RootRouteComponent() {
     const [isLoading, setIsLoading] = useState(true)
     const accessToken = useAuthStore((s) => s.auth.accessToken)
 
@@ -38,12 +37,13 @@ export const Route = createRootRouteWithContext<{
       return <InitialLoading />
     }
 
-    // Show sign-in if no access token
+    // Public auth routes render their own matched route. Protected routes
+    // redirect through their route guard when no access token is present.
     if (!accessToken) {
       return (
         <>
           <NavigationProgress />
-          <SignIn />
+          <Outlet />
           <Toaster duration={1000} />
         </>
       )
