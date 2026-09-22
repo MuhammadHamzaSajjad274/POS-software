@@ -29,4 +29,5 @@ out/
 
 # Local runtime and generated TypeScript state
 app-data.db
+backups/
 *.tsbuildinfo

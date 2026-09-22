@@ -10,6 +10,7 @@
     "dev": "vite --host 0.0.0.0 --port 5173 --strictPort",
     "dev:electron": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
     "build": "tsc -b && vite build",
+    "test:db": "electron scripts/smoke-db.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "format:check": "prettier --check .",

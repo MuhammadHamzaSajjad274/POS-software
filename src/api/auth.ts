@@ -154,20 +154,14 @@ export async function checkCachedCredentials(): Promise<LoginResponse | null> {
       return null;
     }
 
-    // Attempt to login with cached credentials
-    console.log('[Cached Login] Attempting login with cached credentials for:', cachedUser.email);
-    const response = await login({ 
-      email: cachedUser.email, 
-      password: cachedUser.password 
-    });
-
-    if (response.success) {
-      console.log('[Cached Login] Successfully logged in with cached credentials');
-      return response;
-    } else {
-      console.log('[Cached Login] Cached credentials failed, user needs to login manually');
-      return null;
-    }
+    // The stored value is a bcrypt hash, not the user's original password.
+    // Treating it as plaintext would make bcrypt comparison fail.
+    console.log('[Cached Login] Restoring local session for:', cachedUser.email);
+    return {
+      success: true,
+      token: 'local-auth-token',
+      data: { user: cachedUser },
+    };
   } catch (error) {
     console.error('[Cached Login] Error checking cached credentials:', error);
     return null;

@@ -234,6 +234,8 @@ npm run dev:electron
 
 `npm run dev:electron` starts the Vite dev server (port 5173) and launches the Electron shell against it. The local SQLite file (`app-data.db`) is created automatically in the project directory on first run.
 
+Before each database initialization, the application creates a timestamped backup under the local `backups/` directory. Local database files and backups are ignored by Git.
+
 ## npm Scripts
 
 | Script | Description |

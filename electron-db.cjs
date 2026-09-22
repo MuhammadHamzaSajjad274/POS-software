@@ -37,11 +37,22 @@ function getLocalDateTime() {
     String(now.getSeconds()).padStart(2, '0');
 }
 
+function backupDatabaseBeforeInitialization() {
+  if (!fs.existsSync(dbPath)) return;
+
+  const backupDir = path.join(path.dirname(dbPath), 'backups');
+  fs.mkdirSync(backupDir, { recursive: true });
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const backupPath = path.join(backupDir, `app-data-${timestamp}.db`);
+  fs.copyFileSync(dbPath, backupPath);
+}
+
 // Initialize db at module level
 let db = null;
 
 function initializeDatabase() {
   try {
+    backupDatabaseBeforeInitialization();
     // Initialize the database with error handling
     db = new Database(dbPath); // Remove verbose logging to prevent console spam
     console.log('Database opened successfully at:', dbPath);
@@ -49,20 +60,10 @@ function initializeDatabase() {
     // Enable foreign keys
     db.prepare('PRAGMA foreign_keys = ON').run();
 
-    // Drop old tables if they exist to start fresh
-    const tablesToDrop = [
-      'sales', 'sales_items', 'customers', 'suppliers', 
-      'bill_items', 'purchase_items', 'quotation_items'
-    ];
-    
-    tablesToDrop.forEach(table => {
-      try {
-        db.prepare(`DROP TABLE IF EXISTS ${table}`).run();
-        console.log(`Dropped old table: ${table}`);
-      } catch (e) {
-        console.log(`Table ${table} didn't exist or couldn't be dropped: ${e.message}`);
-      }
-    });
+    db.prepare(`CREATE TABLE IF NOT EXISTS schema_migrations (
+      version TEXT PRIMARY KEY,
+      applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`).run();
 
     // Create categories table
     db.prepare(`CREATE TABLE IF NOT EXISTS categories (
@@ -383,6 +384,8 @@ function initializeDatabase() {
 
     // Create indexes for better performance
     createIndexes();
+
+    db.prepare(`INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)`).run('2026-09-22-initial-safe-startup');
 
     // Seed with mock data if tables are empty
     seedMockData();
