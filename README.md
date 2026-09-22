@@ -4,8 +4,6 @@ MartPOS is a **local-first desktop Point of Sale and retail management system** 
 
 MartPOS is **not** a generic admin dashboard template — it is a full retail operations tool covering point-of-sale billing, quotations, inventory and stock reservations, purchasing, customer/supplier accounts, payments, and business analytics.
 
-> **Screenshots:** add product screenshots to `docs/screenshots/` (e.g. `docs/screenshots/pos.png`, `dashboard.png`, `inventory.png`, `bills.png`) and reference them here once available:
-> `![POS screen](docs/screenshots/pos.png)`
 
 ---
 
